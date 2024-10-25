@@ -1,0 +1,72 @@
+def max_sum_subarray(arr, k):
+    """
+    Problem 1: Maximum Sum Subarray of Size k
+    """
+    # Initialize variables
+    max_sum = 0
+    window_sum = 0
+    n = len(arr)
+    # Calculate the sum of the first window of size k
+    for i in range(k):
+        window_sum += arr[i]
+    max_sum = window_sum
+    # Slide the window over the array
+    for i in range(k, n):
+        # Slide the window by subtracting the element leaving and adding the new one
+        window_sum += arr[i] - arr[i - k]
+        max_sum = max(max_sum, window_sum)
+    return max_sum
+def longest_substring_k_distinct(s, k):
+    """
+    Problem 2: Longest Substring with k Distinct Characters
+    """
+    window_start = 0
+    max_length = 0
+    char_frequency = {}
+    # Sliding window over the string
+    for window_end in range(len(s)):
+        right_char = s[window_end]
+        char_frequency[right_char] = char_frequency.get(right_char, 0) + 1
+        # Shrink the window until we have at most 'k' distinct characters
+        while len(char_frequency) > k:
+            left_char = s[window_start]
+            char_frequency[left_char] -= 1
+            if char_frequency[left_char] == 0:
+                del char_frequency[left_char]
+            window_start += 1  # Move the start of the window
+        # Calculate the maximum length
+        max_length = max(max_length, window_end - window_start + 1)
+    return max_length
+def smallest_subarray_with_sum(arr, S):
+    """
+    Problem 3: Smallest Subarray with Sum Greater Than or Equal to S
+    """
+    window_start = 0
+    window_sum = 0
+    min_length = float('inf')
+    for window_end in range(len(arr)):
+        window_sum += arr[window_end]
+        # Shrink the window until window_sum is smaller than S
+        while window_sum >= S:
+            min_length = min(min_length, window_end - window_start + 1)
+            window_sum -= arr[window_start]
+            window_start += 1
+    # If min_length didn't change, it means no valid subarray was found
+    return min_length if min_length != float('inf') else 0
+# Example usage
+if __name__ == "__main__":
+    # Problem 1: Maximum Sum Subarray of Size k
+    arr = [1, 2, 6, 2, 4, 1]
+    k1 = 4
+    max_sum_result = max_sum_subarray(arr, k1)
+    print(f"The maximum sum of a subarray of size {k1} is: {max_sum_result}")
+    # Problem 2: Longest Substring with k Distinct Characters
+    s = "ananya"
+    k2 = 3
+    longest_substring_result = longest_substring_k_distinct(s, k2)
+    print(f"The longest substring with {k2} distinct characters is of length: {longest_substring_result}")
+    # Problem 3: Smallest Subarray with Sum Greater Than or Equal to S
+    arr2 = [2, 1, 5, 2, 3, 2]
+    S = 7
+    smallest_subarray_result = smallest_subarray_with_sum(arr2, S)
+    print(f"The smallest subarray with sum >= {S} is of length: {smallest_subarray_result}")
