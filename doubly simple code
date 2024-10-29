@@ -1,0 +1,238 @@
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None
+
+    def insert_at_beginning(self, data):
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+        else:
+            new_node.next = self.head
+            self.head.prev = new_node
+            self.head = new_node
+        print(f"Inserted {data} at the beginning. Head address is now {id(self.head)}")
+
+    def insert_at_end(self, data):
+        new_node = Node(data)
+        if not self.head:
+            self.head = new_node
+            print(f"Inserted {data} at the end. Head address is now {id(self.head)}")
+            return
+        last = self.head
+        while last.next:
+            last = last.next
+        last.next = new_node
+        new_node.prev = last
+        print(f"Inserted {data} at the end. Head address is {id(self.head)}")
+
+    def insert_at_position(self, data, position):
+        if position < 0:
+            print("Error: Position must be non-negative.")
+            return
+
+        new_node = Node(data)
+        if position == 0:
+            new_node.next = self.head
+            if self.head:
+                self.head.prev = new_node
+            self.head = new_node
+            print(f"Inserted {data} at position {position}. Head address is now {id(self.head)}")
+            return
+
+        current = self.head
+        current_position = 0
+
+        while current and current_position < position:
+            current = current.next
+            current_position += 1
+
+        if current_position == position:
+            new_node.next = current
+            new_node.prev = current.prev
+            if current.prev:
+                current.prev.next = new_node
+            if current:
+                current.prev = new_node
+            print(f"Inserted {data} at position {position}. Head address is {id(self.head)}")
+        else:
+            print("Error: Position out of bounds.")
+
+    def delete_at_beginning(self):
+        if not self.head:
+            print("Error: List is empty.")
+            return
+        print(f"Deleted {self.head.data} from the beginning.")
+        self.head = self.head.next
+        if self.head:
+            self.head.prev = None
+            print(f"Head address is now {id(self.head)}")
+        else:
+            print("List is now empty.")
+
+    def delete_at_end(self):
+        if not self.head:
+            print("Error: List is empty.")
+            return
+        if not self.head.next:
+            print(f"Deleted {self.head.data} from the end. List is now empty.")
+            self.head = None
+            return
+
+        last = self.head
+        while last.next:
+            last = last.next
+        print(f"Deleted {last.data} from the end.")
+        if last.prev:
+            last.prev.next = None
+        print(f"Head address is {id(self.head)}")
+
+    def delete_node(self, key):
+        current = self.head
+
+        while current and current.data != key:
+            current = current.next
+
+        if not current:
+            print("Error: Node not found.")
+            return
+
+        if current.prev:
+            current.prev.next = current.next
+        if current.next:
+            current.next.prev = current.prev
+        if current == self.head:
+            self.head = current.next
+        print(f"Deleted {key} from the list.")
+        if self.head:
+            print(f"Head address is now {id(self.head)}")
+        else:
+            print("List is now empty.")
+
+    def delete_at_position(self, position):
+        if position < 0:
+            print("Error: Position must be non-negative.")
+            return
+
+        current = self.head
+        current_position = 0
+
+        while current and current_position < position:
+            current = current.next
+            current_position += 1
+
+        if not current:
+            print("Error: Position out of bounds.")
+            return
+
+        if current.prev:
+            current.prev.next = current.next
+        if current.next:
+            current.next.prev = current.prev
+        if current == self.head:
+            self.head = current.next
+        print(f"Deleted {current.data} from position {position}.")
+        if self.head:
+            print(f"Head address is now {id(self.head)}")
+        else:
+            print("List is now empty.")
+
+    def search(self, key):
+        current = self.head
+        while current:
+            if current.data == key:
+                return True
+            current = current.next
+        return False
+
+    def traverse(self):
+        elements = []
+        current = self.head
+        while current:
+            prev_address = id(self.head) if current == self.head else id(current.prev)
+            next_address = id(current.next) if current.next else None
+            elements.append((current.data, id(current), prev_address, next_address))
+            current = current.next
+        return elements
+
+    def is_empty(self):
+        return self.head is None
+
+    def size(self):
+        count = 0
+        current = self.head
+        while current:
+            count += 1
+            current = current.next
+        return count
+
+if __name__ == "__main__":
+    dll = DoublyLinkedList()
+
+    while True:
+        print("\nDoubly Linked List Operations:")
+        print("1. Insert at Beginning")
+        print("2. Insert at End")
+        print("3. Insert at Position")
+        print("4. Delete at Beginning")
+        print("5. Delete at End")
+        print("6. Delete Node by Value")
+        print("7. Delete Node by Position")
+        print("8. Search")
+        print("9. Traverse")
+        print("10. Check if Empty")
+        print("11. Get Size")
+        print("12. Exit")
+
+        choice = input("\nEnter your choice: ")
+
+        if choice == '1':
+            data = int(input("Enter data to insert at beginning: "))
+            dll.insert_at_beginning(data)
+        elif choice == '2':
+            data = int(input("Enter data to insert at end: "))
+            dll.insert_at_end(data)
+        elif choice == '3':
+            data = int(input("Enter data to insert: "))
+            position = int(input("Enter position: "))
+            dll.insert_at_position(data, position)
+        elif choice == '4':
+            dll.delete_at_beginning()
+        elif choice == '5':
+            dll.delete_at_end()
+        elif choice == '6':
+            data = int(input("Enter value to delete: "))
+            dll.delete_node(data)
+        elif choice == '7':
+            position = int(input("Enter position to delete: "))
+            dll.delete_at_position(position)
+        elif choice == '8':
+            data = int(input("Enter value to search: "))
+            found = dll.search(data)
+            if found:
+                print(f"Element {data} found in the list.")
+            else:
+                print(f"Element {data} not found in the list.")
+        elif choice == '9':
+            elements = dll.traverse()
+            print("\nDoubly Linked List Elements:")
+            for data, current_address, prev_address, next_address in elements:
+                print(f"Data: {data}, Addr: {current_address}, Prev: {prev_address}, Next: {next_address}")
+        elif choice == '10':
+            empty = dll.is_empty()
+            if empty:
+                print("List is empty.")
+            else:
+                print("List is not empty.")
+        elif choice == '11':
+            size = dll.size()
+            print(f"Size of the list: {size}")
+        elif choice == '12':
+            break
+        else:
+            print("Invalid choice. Please enter a valid option.")
